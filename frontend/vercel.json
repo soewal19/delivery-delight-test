@@ -5,14 +5,9 @@
       "src": "package.json",
       "use": "@vercel/static-build",
       "config": { "distDir": "dist" }
-    },
-    {
-      "src": "../backend/api/index.ts",
-      "use": "@vercel/node"
     }
   ],
   "rewrites": [
-    { "source": "/api/(.*)", "destination": "/../backend/api/index.ts" },
     { "source": "/(.*)", "destination": "/$1" }
   ]
 }
