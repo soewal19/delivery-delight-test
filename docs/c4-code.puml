@@ -1,0 +1,86 @@
+@startuml C4_Code
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Code.puml
+
+title Code Diagram for Delivery Delight Frontend
+
+Container(webApp, "Web Application", "React, TypeScript, Vite", "Provides the user interface for browsing restaurants, viewing menus, and placing orders")
+
+Container_Boundary(webAppBoundary, "Web Application") {
+    Component(appTsx, "App.tsx", "React Component", "Main application component with routing")
+    Component(mainTsx, "main.tsx", "React Entry Point", "Application entry point that renders App component")
+    
+    Component_Boundary(pagesBoundary, "Pages") {
+        Component(indexPage, "Index.tsx", "React Component", "Home page with shop listing")
+        Component(shopsPage, "ShopsPage.tsx", "React Component", "Shops listing page")
+        Component(productDetailPage, "ProductDetailPage.tsx", "React Component", "Product detail page")
+        Component(cartPage, "CartPage.tsx", "React Component", "Shopping cart page")
+        Component(ordersPage, "OrdersPage.tsx", "React Component", "Orders history page")
+        Component(couponsPage, "CouponsPage.tsx", "React Component", "Coupons page")
+        Component(errorPage, "ErrorPage.tsx", "React Component", "Error page")
+        Component(notFoundPage, "NotFound.tsx", "React Component", "404 page")
+    }
+    
+    Component_Boundary(componentsBoundary, "Components") {
+        Component(header, "Header.tsx", "React Component", "Application header with navigation")
+        Component(footer, "Footer.tsx", "React Component", "Application footer")
+        Component(layout, "Layout.tsx", "React Component", "Layout wrapper component")
+        Component(productCard, "ProductCard.tsx", "React Component", "Product card component")
+        Component(shopCard, "ShopCard.tsx", "React Component", "Shop card component")
+        Component(searchBar, "SearchBar.tsx", "React Component", "Search bar component")
+        Component(filters, "Filters.tsx", "React Component", "Filters component")
+        Component(preloader, "Preloader.tsx", "React Component", "Loading preloader component")
+    }
+    
+    Component_Boundary(storeBoundary, "Store") {
+        Component(cartStore, "cartStore.ts", "Zustand Store", "Shopping cart state management")
+        Component(shopStore, "shopStore.ts", "Zustand Store", "Shop state management")
+        Component(viewedStore, "viewedStore.ts", "Zustand Store", "Recently viewed products state management")
+    }
+    
+    Component_Boundary(apiBoundary, "API") {
+        Component(apiClient, "client.ts", "API Client", "HTTP client for API requests")
+    }
+    
+    Component_Boundary(hooksBoundary, "Hooks") {
+        Component(useMobile, "use-mobile.tsx", "React Hook", "Mobile detection hook")
+        Component(useToast, "use-toast.ts", "React Hook", "Toast notification hook")
+    }
+    
+    Component_Boundary(libBoundary, "Lib") {
+        Component(utils, "utils.ts", "Utility Functions", "Utility functions for class names")
+    }
+    
+    Component_Boundary(typesBoundary, "Types") {
+        Component(indexTypes, "index.ts", "TypeScript Types", "Type definitions for the application")
+    }
+}
+
+Rel(mainTsx, appTsx, "Renders")
+Rel(appTsx, indexPage, "Routes to")
+Rel(appTsx, shopsPage, "Routes to")
+Rel(appTsx, productDetailPage, "Routes to")
+Rel(appTsx, cartPage, "Routes to")
+Rel(appTsx, ordersPage, "Routes to")
+Rel(appTsx, couponsPage, "Routes to")
+Rel(appTsx, errorPage, "Routes to")
+Rel(appTsx, notFoundPage, "Routes to")
+
+Rel(appTsx, layout, "Uses")
+Rel(layout, header, "Uses")
+Rel(layout, footer, "Uses")
+
+Rel(shopsPage, shopCard, "Uses")
+Rel(productDetailPage, productCard, "Uses")
+Rel(cartPage, productCard, "Uses")
+
+Rel(shopsPage, searchBar, "Uses")
+Rel(shopsPage, filters, "Uses")
+
+Rel(cartPage, cartStore, "Uses")
+Rel(shopsPage, shopStore, "Uses")
+Rel(productDetailPage, viewedStore, "Uses")
+
+Rel(apiClient, cartStore, "Uses")
+Rel(apiClient, shopStore, "Uses")
+
+@enduml

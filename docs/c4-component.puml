@@ -1,0 +1,55 @@
+@startuml C4_Component
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Component.puml
+
+title Component Diagram for Delivery Delight API
+
+Container(api, "API Application", "NestJS, TypeScript", "Provides REST API for the web application and handles business logic")
+
+Container_Boundary(apiBoundary, "API Application") {
+    Component(appModule, "App Module", "NestJS Module", "Main application module that imports all other modules")
+    Component(productsModule, "Products Module", "NestJS Module", "Handles product-related operations")
+    Component(shopsModule, "Shops Module", "NestJS Module", "Handles shop-related operations")
+    Component(ordersModule, "Orders Module", "NestJS Module", "Handles order-related operations")
+    Component(couponsModule, "Coupons Module", "NestJS Module", "Handles coupon-related operations")
+    Component(prismaModule, "Prisma Module", "NestJS Module", "Provides database access through Prisma ORM")
+    
+    Component(productsController, "Products Controller", "NestJS Controller", "Handles HTTP requests for products")
+    Component(shopsController, "Shops Controller", "NestJS Controller", "Handles HTTP requests for shops")
+    Component(ordersController, "Orders Controller", "NestJS Controller", "Handles HTTP requests for orders")
+    Component(couponsController, "Coupons Controller", "NestJS Controller", "Handles HTTP requests for coupons")
+    
+    Component(productsService, "Products Service", "NestJS Service", "Contains business logic for products")
+    Component(shopsService, "Shops Service", "NestJS Service", "Contains business logic for shops")
+    Component(ordersService, "Orders Service", "NestJS Service", "Contains business logic for orders")
+    Component(couponsService, "Coupons Service", "NestJS Service", "Contains business logic for coupons")
+    
+    Component(prismaService, "Prisma Service", "NestJS Service", "Provides database access through Prisma ORM")
+}
+
+Rel(appModule, productsModule, "Imports")
+Rel(appModule, shopsModule, "Imports")
+Rel(appModule, ordersModule, "Imports")
+Rel(appModule, couponsModule, "Imports")
+Rel(appModule, prismaModule, "Imports")
+
+Rel(productsModule, productsController, "Contains")
+Rel(productsModule, productsService, "Contains")
+Rel(shopsModule, shopsController, "Contains")
+Rel(shopsModule, shopsService, "Contains")
+Rel(ordersModule, ordersController, "Contains")
+Rel(ordersModule, ordersService, "Contains")
+Rel(couponsModule, couponsController, "Contains")
+Rel(couponsModule, couponsService, "Contains")
+Rel(prismaModule, prismaService, "Contains")
+
+Rel(productsController, productsService, "Uses")
+Rel(shopsController, shopsService, "Uses")
+Rel(ordersController, ordersService, "Uses")
+Rel(couponsController, couponsService, "Uses")
+
+Rel(productsService, prismaService, "Uses")
+Rel(shopsService, prismaService, "Uses")
+Rel(ordersService, prismaService, "Uses")
+Rel(couponsService, prismaService, "Uses")
+
+@enduml

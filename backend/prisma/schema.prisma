@@ -1,0 +1,93 @@
+generator client {
+  provider      = "prisma-client-js"
+  binaryTargets = ["native", "rhel-openssl-1.0.x"]
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Shop {
+  id          String    @id @default(cuid())
+  name        String
+  description String
+  image       String
+  rating      Float     @default(4.0)
+  lat         Float?
+  lng         Float?
+  products    Product[]
+  createdAt   DateTime  @default(now())
+}
+
+model Category {
+  id       String    @id @default(cuid())
+  name     String    @unique
+  products Product[]
+}
+
+model Product {
+  id          String      @id @default(cuid())
+  name        String
+  description String
+  price       Float
+  image       String
+  rating      Float       @default(4.0)
+  shopId      String
+  shop        Shop        @relation(fields: [shopId], references: [id])
+  categoryId  String
+  category    Category    @relation(fields: [categoryId], references: [id])
+  comments    Comment[]
+  orderItems  OrderItem[]
+  createdAt   DateTime    @default(now())
+}
+
+model Comment {
+  id        String   @id @default(cuid())
+  author    String
+  text      String
+  rating    Float
+  productId String
+  product   Product  @relation(fields: [productId], references: [id])
+  createdAt DateTime @default(now())
+}
+
+model Order {
+  id        String      @id @default(cuid())
+  email     String
+  phone     String
+  address   String
+  total     Float
+  status    String      @default("pending")
+  userId    String?
+  user      User?       @relation(fields: [userId], references: [id])
+  items     OrderItem[]
+  createdAt DateTime    @default(now())
+}
+
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  name      String?
+  avatar    String?
+  orders    Order[]
+  createdAt DateTime @default(now())
+}
+
+model OrderItem {
+  id        String  @id @default(cuid())
+  quantity  Int
+  price     Float
+  productId String
+  product   Product @relation(fields: [productId], references: [id])
+  orderId   String
+  order     Order   @relation(fields: [orderId], references: [id])
+}
+
+model Coupon {
+  id        String   @id @default(cuid())
+  code      String   @unique
+  discount  Float
+  active    Boolean  @default(true)
+  createdAt DateTime @default(now())
+}

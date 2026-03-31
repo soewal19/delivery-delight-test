@@ -1,0 +1,15 @@
+version: '3.8'
+
+services:
+  api:
+    build: .
+    ports:
+      - "3000:3000"
+    volumes:
+      - sqlite-data:/app/prisma
+    environment:
+      - DATABASE_URL=file:./dev.db
+    restart: unless-stopped
+
+volumes:
+  sqlite-data:

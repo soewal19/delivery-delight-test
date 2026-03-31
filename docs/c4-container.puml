@@ -1,0 +1,25 @@
+@startuml C4_Container
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
+
+title Container Diagram for Delivery Delight
+
+Person(customer, "Customer", "A customer who wants to order food from restaurants")
+Person(admin, "Admin", "An administrator who manages the system")
+
+System_Boundary(deliveryDelight, "Delivery Delight") {
+    Container(webApp, "Web Application", "React, TypeScript, Vite", "Provides the user interface for browsing restaurants, viewing menus, and placing orders")
+    Container(api, "API Application", "NestJS, TypeScript", "Provides REST API for the web application and handles business logic")
+    ContainerDb(database, "Database", "SQLite, Prisma", "Stores restaurants, products, orders, coupons, and user data")
+}
+
+System_Ext(paymentGateway, "Payment Gateway", "Processes payments for orders")
+System_Ext(emailService, "Email Service", "Sends order confirmations and notifications")
+
+Rel(customer, webApp, "Uses", "HTTPS")
+Rel(admin, webApp, "Manages", "HTTPS")
+Rel(webApp, api, "Makes API calls to", "HTTPS")
+Rel(api, database, "Reads from and writes to", "Prisma ORM")
+Rel(api, paymentGateway, "Processes payments", "HTTPS")
+Rel(api, emailService, "Sends notifications", "SMTP")
+
+@enduml

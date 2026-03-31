@@ -1,0 +1,19 @@
+@startuml C4_Context
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Context.puml
+
+title System Context Diagram for Delivery Delight
+
+Person(customer, "Customer", "A customer who wants to order food from restaurants")
+Person(admin, "Admin", "An administrator who manages the system")
+
+System(deliveryDelight, "Delivery Delight", "Allows customers to browse restaurants, view menus, add items to cart, and place orders")
+
+System_Ext(paymentGateway, "Payment Gateway", "Processes payments for orders")
+System_Ext(emailService, "Email Service", "Sends order confirmations and notifications")
+
+Rel(customer, deliveryDelight, "Browses restaurants, places orders", "HTTPS")
+Rel(admin, deliveryDelight, "Manages restaurants, products, orders", "HTTPS")
+Rel(deliveryDelight, paymentGateway, "Processes payments", "HTTPS")
+Rel(deliveryDelight, emailService, "Sends notifications", "SMTP")
+
+@enduml
