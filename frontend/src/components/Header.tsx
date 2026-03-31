@@ -1,17 +1,19 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ShoppingCart, User, HelpCircle } from 'lucide-react';
+import { ShoppingCart, User as UserIcon, HelpCircle, LogOut } from 'lucide-react';
 import { useCartStore } from '@/store/cartStore';
 import { useUserStore } from '@/store/userStore';
 import { Button } from '@/components/ui/button';
 import { Tooltip, TooltipTrigger, TooltipContent } from '@/components/ui/tooltip';
 import SearchBar from '@/components/SearchBar';
 import { ConnectionStatus } from './ConnectionStatus';
+import { AuthDialog } from './auth/AuthDialog';
 
 const Header = () => {
   const itemCount = useCartStore((s) => s.getItemCount());
   const user = useUserStore((s) => s.user);
+  const logout = useUserStore((s) => s.logout);
 
   return (
     <header className="sticky top-0 z-50 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
@@ -41,17 +43,34 @@ const Header = () => {
             <TooltipContent>How to use & FAQ</TooltipContent>
           </Tooltip>
 
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <Link to="/profile">
-                <Button variant="ghost" size="sm" className="gap-2">
-                  <User className="h-4 w-4" />
-                  <span className="hidden md:inline">{user?.name || 'Profile'}</span>
-                </Button>
-              </Link>
-            </TooltipTrigger>
-            <TooltipContent>Personal Cabinet & Stats</TooltipContent>
-          </Tooltip>
+          {user ? (
+            <div className="flex items-center gap-2">
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Link to="/profile">
+                    <Button variant="ghost" size="sm" className="gap-2">
+                      <UserIcon className="h-4 w-4" />
+                      <span className="hidden md:inline">{user.name || 'Profile'}</span>
+                    </Button>
+                  </Link>
+                </TooltipTrigger>
+                <TooltipContent>Personal Cabinet & Stats</TooltipContent>
+              </Tooltip>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button variant="ghost" size="icon" onClick={() => logout()}>
+                    <LogOut className="h-4 w-4 text-destructive" />
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>Logout</TooltipContent>
+              </Tooltip>
+            </div>
+          ) : (
+            <AuthDialog>
+              <Button variant="default" size="sm">Login</Button>
+            </AuthDialog>
+          )}
+
           <Tooltip>
             <TooltipTrigger asChild>
               <Link to="/orders"><Button variant="ghost" size="sm">Orders</Button></Link>

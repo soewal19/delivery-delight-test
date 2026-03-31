@@ -1,26 +1,44 @@
-import type { Product, Shop, Coupon, Order, CartItem } from '@/types';
+import type { Product, Shop, Coupon, Order, CartItem, User } from '@/types';
 
 const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api';
 
 async function fetchApi<T>(endpoint: string, options?: RequestInit): Promise<T> {
   const url = endpoint.startsWith('/api') ? `${API_BASE_URL.replace('/api', '')}${endpoint}` : `${API_BASE_URL}${endpoint}`;
+  
+  // Get token from zustand persist store manually to avoid circular dependency
+  const userStorage = localStorage.getItem('delivery-delight-user');
+  const token = userStorage ? JSON.parse(userStorage).state.token : null;
+
   const response = await fetch(url, {
     ...options,
     headers: {
       'Content-Type': 'application/json',
+      ...(token ? { 'Authorization': `Bearer ${token}` } : {}),
       ...options?.headers,
     },
   });
 
   if (!response.ok) {
     const error = await response.json().catch(() => ({ message: 'API error' }));
-    throw new Error(error.message || 'API error');
+    const err: any = new Error(error.message || 'API error');
+    err.status = response.status;
+    throw err;
   }
 
   return response.json();
 }
 
 export const api = {
+  auth: {
+    login: (data: any) => fetchApi<{ access_token: string; user: User }>('/auth/login', {
+      method: 'POST',
+      body: JSON.stringify(data),
+    }),
+    register: (data: any) => fetchApi<{ access_token: string; user: User }>('/auth/register', {
+      method: 'POST',
+      body: JSON.stringify(data),
+    }),
+  },
   shops: {
     list: (minRating?: number, maxRating?: number) => {
       const params = new URLSearchParams();
@@ -67,6 +85,7 @@ export const api = {
     validate: (code: string) => fetchApi<Coupon>(`/coupons/${code}/validate`),
   },
   users: {
+    getProfile: () => fetchApi<any>('/users/profile'),
     get: (email: string) => fetchApi<any>(`/users/${email}`),
     upsert: (data: { email: string; name?: string; avatar?: string }) => 
       fetchApi<any>('/users', {

@@ -1,64 +1,135 @@
-# Delivery Delight — Advanced Level (Test Task) 🍔🍕🥤
+# Delivery Delight - Food Delivery App
 
-**Accomplished Level: Advanced (Base + Middle + Advanced + Additional Ideas)**
+## 🚀 Быстрый старт
 
-## 🚀 Public URL
-[Link to your hosted application here]
+### Локальная разработка
 
-## 📝 Accomplished Tasks
+```bash
+# Установите зависимости
+npm install
 
-### Base Level (Completed)
-- [x] **Shops Page**: Users can browse shops and add products to the cart.
-- [x] **Shopping Cart Page**: Users can manage items, change quantities, and remove products.
-- [x] **Order Submission**: Form validation for email, phone, and address.
-- [x] **Database Integration**: Orders are saved in MongoDB using Prisma ORM.
+# Запустите бэкенд
+cd backend
+npm install
+npm run start:dev
 
-### Middle Level (Completed)
-- [x] **Responsive Design**: Works perfectly on Mobile, Tablet, and Desktop.
-- [x] **Product Filtering**: Filter products by multiple categories (Burgers, Pizza, Drinks, etc.).
-- [x] **Product Sorting**: Sort by price (low/high) and name (A-Z).
-- [x] **Shop Filtering**: Filter restaurants by rating range (e.g., 4.0 - 5.0).
+# В новом терминале запустите фронтенд
+cd frontend
+npm install
+npm run dev
+```
 
-### Advanced Level (Completed)
-- [x] **Pagination**: Efficiently load products in batches.
-- [x] **Reorder Functionality**: Quick repeat of previous orders from history.
-- [x] **Advanced State Management**: Powered by Zustand with persistence.
+Приложение будет доступно:
+- **Фронтенд:** http://localhost:5173
+- **Бэкенд:** http://localhost:3000
+- **Swagger:** http://localhost:3000/api/docs
 
-### Additional Features (World-Class Practices)
-- [x] **Real-time Connectivity**: Socket.io integration for DB and Server status indicators.
-- [x] **Personal Cabinet**: User profiles with avatar management (DiceBear API).
-- [x] **Data Visualization**: Animated spending charts using Recharts.
-- [x] **Animated Logging**: Custom NestJS logger with file rotation and automatic compression (keeps last 3 logs, archives the rest).
-- [x] **Modern Routing**: Integrated React Router 6.x with `createBrowserRouter` and centralized Error Boundaries.
-- [x] **Performance Optimization**: Image Lazy Loading with skeleton placeholders and React Suspense for code-splitting.
-- [x] **Interactive Shop Maps**: Integration with Leaflet (OpenStreetMap) to show shop locations.
-- [x] **Dynamic Directions**: Real-time visual indicators (arrows) from the user's location to the shop on the map.
-- [x] **SEO Optimization**: React Helmet integration for meta tags and social sharing.
-- [x] **Modern UI/UX**: Built with Shadcn/UI, Tailwind CSS, and Framer Motion animations.
-- [x] **Serverless Ready**: Optimized for Vercel deployment.
+## 📦 Деплой
 
----
+### Бэкенд на Render (рекомендуется)
 
-## 🛠️ Tech Stack
+**Почему Render?**
+- ✅ Поддерживает WebSocket
+- ✅ Поддерживает SQLite
+- ✅ Бесплатный тир
+- ✅ Авто-деплой из GitHub
 
-- **Frontend**: React 18, Vite, TypeScript, Zustand, TanStack Query, Tailwind CSS, Shadcn/UI, Framer Motion.
-- **Backend**: NestJS, Prisma ORM, Socket.io.
-- **Database**: MongoDB Atlas.
-- **Deployment**: Vercel.
+**Инструкции:** Смотрите [RENDER_DEPLOY.md](RENDER_DEPLOY.md)
 
-## ⚙️ Setup & Installation
+### Фронтенд на Vercel
 
-### Backend
-1. `cd backend`
-2. `npm install`
-3. Create `.env` with `DATABASE_URL` (MongoDB).
-4. `npx prisma generate`
-5. `npm run start:dev`
+**Инструкции:** Смотрите [GITHUB_SETUP.md](GITHUB_SETUP.md)
 
-### Frontend
-1. `cd frontend`
-2. `npm install`
-3. `npm run dev`
+## 🏗️ Архитектура
 
----
-Developed with ❤️ using best world practices.
+### Бэкенд (NestJS)
+- **Framework:** NestJS 10
+- **Database:** SQLite (Prisma ORM)
+- **WebSocket:** Socket.io
+- **API Docs:** Swagger
+
+### Фронтенд (React)
+- **Framework:** React 18 + Vite
+- **UI:** Tailwind CSS + shadcn/ui
+- **State:** React Query
+- **Router:** React Router 6
+
+## 📁 Структура проекта
+
+```
+delivery-delight/
+├── backend/                 # NestJS бэкенд
+│   ├── src/
+│   │   ├── coupons/        # Купоны
+│   │   ├── events/         # WebSocket
+│   │   ├── orders/         # Заказы
+│   │   ├── products/       # Продукты
+│   │   ├── shops/          # Магазины
+│   │   └── users/          # Пользователи
+│   ├── prisma/             # Схема БД
+│   └── api/                # Vercel entry point
+├── frontend/               # React фронтенд
+│   ├── src/
+│   │   ├── components/     # Компоненты
+│   │   ├── pages/          # Страницы
+│   │   └── api/            # API клиент
+│   └── public/             # Статические файлы
+└── docs/                   # Документация
+```
+
+## 🔧 Переменные окружения
+
+### Бэкенд
+```env
+DATABASE_URL=file:./dev.db
+NODE_ENV=production
+PORT=10000
+```
+
+### Фронтенд
+```env
+VITE_API_URL=https://your-backend-url.com/api
+```
+
+## 📚 API Endpoints
+
+### Магазины
+- `GET /api/shops` - Все магазины
+- `GET /api/shops/:id` - Магазин по ID
+
+### Продукты
+- `GET /api/products` - Все продукты
+- `GET /api/products/:id` - Продукт по ID
+
+### Заказы
+- `POST /api/orders` - Создать заказ
+- `GET /api/orders` - Все заказы
+- `GET /api/orders/:id` - Заказ по ID
+
+### Пользователи
+- `GET /api/users/:email` - Пользователь по email
+- `POST /api/users` - Создать/обновить пользователя
+- `GET /api/users/:id/stats` - Статистика пользователя
+
+### Купоны
+- `GET /api/coupons` - Все купоны
+- `GET /api/coupons/:code/validate` - Проверить купон
+
+## 🛠️ Технологии
+
+### Бэкенд
+- [NestJS](https://nestjs.com/)
+- [Prisma](https://www.prisma.io/)
+- [Socket.io](https://socket.io/)
+- [Swagger](https://swagger.io/)
+
+### Фронтенд
+- [React](https://react.dev/)
+- [Vite](https://vitejs.dev/)
+- [Tailwind CSS](https://tailwindcss.com/)
+- [shadcn/ui](https://ui.shadcn.com/)
+- [React Query](https://tanstack.com/query)
+
+## 📝 Лицензия
+
+MIT

@@ -11,11 +11,12 @@ interface User {
 
 interface UserState {
   user: User | null;
+  token: string | null;
   isLoading: boolean;
   error: string | null;
   
-  setUser: (user: User | null) => void;
-  fetchProfile: (email: string) => Promise<void>;
+  setAuth: (user: User | null, token: string | null) => void;
+  fetchProfile: () => Promise<void>;
   updateProfile: (data: { name?: string; avatar?: string }) => Promise<void>;
   logout: () => void;
 }
@@ -24,24 +25,27 @@ export const useUserStore = create<UserState>()(
   persist(
     (set, get) => ({
       user: null,
+      token: null,
       isLoading: false,
       error: null,
 
-      setUser: (user) => set({ user }),
+      setAuth: (user, token) => set({ user, token }),
 
-      fetchProfile: async (email) => {
+      fetchProfile: async () => {
+        if (!get().token) return;
         set({ isLoading: true });
         try {
-          const profile = await api.users.get(email);
+          const profile = await api.users.getProfile();
           set({ user: profile, isLoading: false, error: null });
         } catch (err: any) {
           set({ error: err.message, isLoading: false });
+          if (err.status === 401) get().logout();
         }
       },
 
       updateProfile: async (data) => {
         const currentUser = get().user;
-        if (!currentUser) return;
+        if (!currentUser || !get().token) return;
 
         set({ isLoading: true });
         try {
@@ -55,7 +59,7 @@ export const useUserStore = create<UserState>()(
         }
       },
 
-      logout: () => set({ user: null, error: null }),
+      logout: () => set({ user: null, token: null, error: null }),
     }),
     { name: 'delivery-delight-user' }
   )

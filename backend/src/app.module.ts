@@ -7,8 +7,9 @@ import { CouponsModule } from './coupons/coupons.module';
 import { EventsModule } from './events/events.module';
 import { UsersModule } from './users/users.module';
 import { LoggerModule } from './logger/logger.module';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
-  imports: [PrismaModule, ShopsModule, ProductsModule, OrdersModule, CouponsModule, EventsModule, UsersModule, LoggerModule],
+  imports: [PrismaModule, ShopsModule, ProductsModule, OrdersModule, CouponsModule, EventsModule, UsersModule, LoggerModule, AuthModule],
 })
 export class AppModule {}
