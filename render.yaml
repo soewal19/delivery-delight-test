@@ -1,0 +1,11 @@
+services:
+  - type: web
+    name: delivery-delight-backend
+    runtime: node
+    buildCommand: cd backend && npm install && npx prisma generate
+    startCommand: cd backend && npm run start:prod
+    envVars:
+      - key: DATABASE_URL
+        value: file:./dev.db
+      - key: NODE_ENV
+        value: production

@@ -8,34 +8,38 @@ export const ConnectionStatus: React.FC = () => {
   const isSocketConnected = useSocketStore((s) => s.isSocketConnected);
   const isDbConnected = useSocketStore((s) => s.isDbConnected);
 
+  const StatusDot = ({ active }: { active: boolean }) => (
+    <div 
+      className={`w-2 h-2 rounded-full ${active ? 'bg-green-500 shadow-[0_0_8px_rgba(34,197,94,0.6)]' : 'bg-red-500 shadow-[0_0_8px_rgba(239,68,68,0.6)]'} animate-pulse`} 
+    />
+  );
+
   return (
-    <div className="flex items-center gap-2">
+    <div className="flex items-center gap-3">
       <TooltipProvider>
         <Tooltip>
           <TooltipTrigger asChild>
-            <Badge variant={isSocketConnected ? "outline" : "destructive"} className="gap-1.5 px-2 py-1">
-              {isSocketConnected ? (
-                <Zap className="h-3 w-3 text-yellow-500 fill-yellow-500" />
-              ) : (
-                <ZapOff className="h-3 w-3" />
-              )}
-              <span className="text-[10px] font-medium uppercase tracking-wider">Socket</span>
-            </Badge>
+            <div className="flex items-center gap-1.5 cursor-help">
+              <StatusDot active={isSocketConnected} />
+              <Zap className={`h-4 w-4 ${isSocketConnected ? 'text-yellow-500 fill-yellow-500' : 'text-muted-foreground'}`} />
+              <span className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">Socket</span>
+            </div>
           </TooltipTrigger>
           <TooltipContent>
-            <p>{isSocketConnected ? 'Real-time connection active' : 'Real-time connection lost'}</p>
+            <p>{isSocketConnected ? 'Socket connected' : 'Socket disconnected'}</p>
           </TooltipContent>
         </Tooltip>
 
         <Tooltip>
           <TooltipTrigger asChild>
-            <Badge variant={isDbConnected ? "outline" : "destructive"} className="gap-1.5 px-2 py-1">
-              <Database className={`h-3 w-3 ${isDbConnected ? 'text-blue-500' : ''}`} />
-              <span className="text-[10px] font-medium uppercase tracking-wider">DB</span>
-            </Badge>
+            <div className="flex items-center gap-1.5 cursor-help">
+              <StatusDot active={isDbConnected} />
+              <Database className={`h-4 w-4 ${isDbConnected ? 'text-blue-500 fill-blue-500/20' : 'text-muted-foreground'}`} />
+              <span className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">DB</span>
+            </div>
           </TooltipTrigger>
           <TooltipContent>
-            <p>{isDbConnected ? 'Database connected' : 'Database connection error'}</p>
+            <p>{isDbConnected ? 'Database connected' : 'Database disconnected'}</p>
           </TooltipContent>
         </Tooltip>
       </TooltipProvider>
