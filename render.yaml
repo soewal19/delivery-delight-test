@@ -4,7 +4,7 @@ services:
     runtime: node
     plan: free
     buildCommand: cd backend && npm install && npx prisma generate
-    startCommand: cd backend && npm run start:prod
+    startCommand: cd backend && npx prisma db push && node dist/main
     envVars:
       - key: DATABASE_URL
         value: mongodb+srv://Admin2025:Pass321@cluster0.tavfxtx.mongodb.net/chates?retryWrites=true&w=majority&appName=Cluster
