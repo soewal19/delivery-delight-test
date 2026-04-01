@@ -10,6 +10,7 @@ import { EventsModule } from './events/events.module';
 import { UsersModule } from './users/users.module';
 import { LoggerModule } from './logger/logger.module';
 import { AuthModule } from './auth/auth.module';
+import { HealthController } from './health.controller';
 
 @Module({
   imports: [
@@ -27,5 +28,6 @@ import { AuthModule } from './auth/auth.module';
     LoggerModule, 
     AuthModule
   ],
+  controllers: [HealthController],
 })
 export class AppModule {}
