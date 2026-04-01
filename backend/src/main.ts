@@ -4,7 +4,6 @@ import { ValidationPipe } from '@nestjs/common';
 import { AppModule } from './app.module';
 import { CustomLogger } from './logger/custom-logger.service';
 import { join } from 'path';
-import * as express from 'express';
 import { existsSync, mkdirSync } from 'fs';
 
 async function bootstrap() {
@@ -13,11 +12,11 @@ async function bootstrap() {
   app.useLogger(logger);
   
   const uploadDir = join(process.cwd(), 'uploads');
+  console.log('Serving static files from:', uploadDir);
   if (!existsSync(uploadDir)) {
     mkdirSync(uploadDir);
   }
   
-  app.use('/uploads', express.static(uploadDir));
   app.setGlobalPrefix('api');
   app.enableCors({ origin: '*' });
   app.useGlobalPipes(new ValidationPipe({ transform: true }));

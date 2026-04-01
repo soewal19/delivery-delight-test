@@ -9,7 +9,7 @@ datasource db {
 }
 
 model Shop {
-  id          String    @id @default(cuid())
+  id          String    @id @default(cuid()) @map("_id")
   name        String
   description String
   image       String
@@ -21,13 +21,13 @@ model Shop {
 }
 
 model Category {
-  id       String    @id @default(cuid())
+  id       String    @id @default(cuid()) @map("_id")
   name     String    @unique
   products Product[]
 }
 
 model Product {
-  id          String      @id @default(cuid())
+  id          String      @id @default(cuid()) @map("_id")
   name        String
   description String
   price       Float
@@ -43,7 +43,7 @@ model Product {
 }
 
 model Comment {
-  id        String   @id @default(cuid())
+  id        String   @id @default(cuid()) @map("_id")
   author    String
   text      String
   rating    Float
@@ -53,7 +53,7 @@ model Comment {
 }
 
 model Order {
-  id        String      @id @default(cuid())
+  id        String      @id @default(cuid()) @map("_id")
   email     String
   phone     String
   address   String
@@ -66,7 +66,7 @@ model Order {
 }
 
 model User {
-  id        String   @id @default(cuid())
+  id        String   @id @default(cuid()) @map("_id")
   email     String   @unique
   password  String?
   name      String?
@@ -76,7 +76,7 @@ model User {
 }
 
 model OrderItem {
-  id        String  @id @default(cuid())
+  id        String  @id @default(cuid()) @map("_id")
   quantity  Int
   price     Float
   productId String
@@ -86,7 +86,7 @@ model OrderItem {
 }
 
 model Coupon {
-  id        String   @id @default(cuid())
+  id        String   @id @default(cuid()) @map("_id")
   code      String   @unique
   discount  Float
   active    Boolean  @default(true)

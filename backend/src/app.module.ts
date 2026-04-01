@@ -1,4 +1,6 @@
 import { Module } from '@nestjs/common';
+import { ServeStaticModule } from '@nestjs/serve-static';
+import { join } from 'path';
 import { PrismaModule } from './prisma/prisma.module';
 import { ShopsModule } from './shops/shops.module';
 import { ProductsModule } from './products/products.module';
@@ -10,6 +12,20 @@ import { LoggerModule } from './logger/logger.module';
 import { AuthModule } from './auth/auth.module';
 
 @Module({
-  imports: [PrismaModule, ShopsModule, ProductsModule, OrdersModule, CouponsModule, EventsModule, UsersModule, LoggerModule, AuthModule],
+  imports: [
+    ServeStaticModule.forRoot({
+      rootPath: join(process.cwd(), 'uploads'),
+      serveRoot: '/uploads',
+    }),
+    PrismaModule, 
+    ShopsModule, 
+    ProductsModule, 
+    OrdersModule, 
+    CouponsModule, 
+    EventsModule, 
+    UsersModule, 
+    LoggerModule, 
+    AuthModule
+  ],
 })
 export class AppModule {}
