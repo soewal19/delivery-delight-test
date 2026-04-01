@@ -40,6 +40,23 @@ npm run dev
 
 **Инструкции:** Смотрите [GITHUB_SETUP.md](GITHUB_SETUP.md)
 
+## 🌿 Ветки
+
+### master (основная ветка)
+- **База данных:** MongoDB Atlas
+- **Деплой:** Render.com
+- **Строка подключения:** `mongodb+srv://Admin2025:Pass321@cluster0.tavfxtx.mongodb.net/chates?retryWrites=true&w=majority&appName=Cluster`
+
+### local (ветка для локальной разработки)
+- **База данных:** SQLite
+- **Деплой:** Локально
+- **Строка подключения:** `file:./dev.db`
+
+**Для локальной разработки переключитесь на ветку `local`:**
+```bash
+git checkout local
+```
+
 ## 🏗️ Архитектура
 
 ### Бэкенд (NestJS)
@@ -79,7 +96,14 @@ delivery-delight/
 
 ## 🔧 Переменные окружения
 
-### Бэкенд
+### Бэкенд (master ветка - MongoDB)
+```env
+DATABASE_URL=mongodb+srv://Admin2025:Pass321@cluster0.tavfxtx.mongodb.net/chates?retryWrites=true&w=majority&appName=Cluster
+NODE_ENV=production
+PORT=10000
+```
+
+### Бэкенд (local ветка - SQLite)
 ```env
 DATABASE_URL=file:./dev.db
 NODE_ENV=production
