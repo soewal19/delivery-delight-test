@@ -42,15 +42,17 @@ The application will be available at:
 
 ## 🌿 Branches
 
-### master (main branch)
+### [master](https://github.com/soewal19/delivery-delight/tree/master) (main branch)
 - **Database:** MongoDB Atlas
 - **Deployment:** Render.com
 - **Connection string:** `mongodb+srv://Admin2025:Pass321@cluster0.tavfxtx.mongodb.net/chates?retryWrites=true&w=majority&appName=Cluster`
+- **Description:** Production-ready version with MongoDB database, deployed on Render.com
 
-### local (local development branch)
+### [local](https://github.com/soewal19/delivery-delight/tree/local) (local development branch)
 - **Database:** SQLite
 - **Deployment:** Local
 - **Connection string:** `file:./dev.db`
+- **Description:** Local development version with SQLite database, perfect for testing and development
 
 **For local development, switch to the `local` branch:**
 ```bash
