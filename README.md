@@ -1,159 +1,159 @@
 # Delivery Delight - Food Delivery App
 
-## 🚀 Быстрый старт
+## 🚀 Quick Start
 
-### Локальная разработка
+### Local Development
 
 ```bash
-# Установите зависимости
+# Install dependencies
 npm install
 
-# Запустите бэкенд
+# Start backend
 cd backend
 npm install
 npm run start:dev
 
-# В новом терминале запустите фронтенд
+# In a new terminal, start frontend
 cd frontend
 npm install
 npm run dev
 ```
 
-Приложение будет доступно:
-- **Фронтенд:** http://localhost:5173
-- **Бэкенд:** http://localhost:3000
+The application will be available at:
+- **Frontend:** http://localhost:5173
+- **Backend:** http://localhost:3000
 - **Swagger:** http://localhost:3000/api/docs
 
-## 📦 Деплой
+## 📦 Deployment
 
-### Бэкенд на Render (рекомендуется)
+### Backend on Render (recommended)
 
-**Почему Render?**
-- ✅ Поддерживает WebSocket
-- ✅ Поддерживает SQLite
-- ✅ Бесплатный тир
-- ✅ Авто-деплой из GitHub
+**Why Render?**
+- ✅ Supports WebSocket
+- ✅ Supports SQLite
+- ✅ Free tier
+- ✅ Auto-deploy from GitHub
 
-**Инструкции:** Смотрите [RENDER_DEPLOY.md](RENDER_DEPLOY.md)
+**Instructions:** See [RENDER_DEPLOY.md](RENDER_DEPLOY.md)
 
-### Фронтенд на Vercel
+### Frontend on Vercel
 
-**Инструкции:** Смотрите [GITHUB_SETUP.md](GITHUB_SETUP.md)
+**Instructions:** See [GITHUB_SETUP.md](GITHUB_SETUP.md)
 
-## 🌿 Ветки
+## 🌿 Branches
 
-### master (основная ветка)
-- **База данных:** MongoDB Atlas
-- **Деплой:** Render.com
-- **Строка подключения:** `mongodb+srv://Admin2025:Pass321@cluster0.tavfxtx.mongodb.net/chates?retryWrites=true&w=majority&appName=Cluster`
+### master (main branch)
+- **Database:** MongoDB Atlas
+- **Deployment:** Render.com
+- **Connection string:** `mongodb+srv://Admin2025:Pass321@cluster0.tavfxtx.mongodb.net/chates?retryWrites=true&w=majority&appName=Cluster`
 
-### local (ветка для локальной разработки)
-- **База данных:** SQLite
-- **Деплой:** Локально
-- **Строка подключения:** `file:./dev.db`
+### local (local development branch)
+- **Database:** SQLite
+- **Deployment:** Local
+- **Connection string:** `file:./dev.db`
 
-**Для локальной разработки переключитесь на ветку `local`:**
+**For local development, switch to the `local` branch:**
 ```bash
 git checkout local
 ```
 
-## 🏗️ Архитектура
+## 🏗️ Architecture
 
-### Бэкенд (NestJS)
+### Backend (NestJS)
 - **Framework:** NestJS 10
 - **Database:** SQLite (Prisma ORM)
 - **WebSocket:** Socket.io
 - **API Docs:** Swagger
 
-### Фронтенд (React)
+### Frontend (React)
 - **Framework:** React 18 + Vite
 - **UI:** Tailwind CSS + shadcn/ui
 - **State:** React Query
 - **Router:** React Router 6
 
-## 📁 Структура проекта
+## 📁 Project Structure
 
 ```
 delivery-delight/
-├── backend/                 # NestJS бэкенд
+├── backend/                 # NestJS backend
 │   ├── src/
-│   │   ├── coupons/        # Купоны
+│   │   ├── coupons/        # Coupons
 │   │   ├── events/         # WebSocket
-│   │   ├── orders/         # Заказы
-│   │   ├── products/       # Продукты
-│   │   ├── shops/          # Магазины
-│   │   └── users/          # Пользователи
-│   ├── prisma/             # Схема БД
+│   │   ├── orders/         # Orders
+│   │   ├── products/       # Products
+│   │   ├── shops/          # Shops
+│   │   └── users/          # Users
+│   ├── prisma/             # DB schema
 │   └── api/                # Vercel entry point
-├── frontend/               # React фронтенд
+├── frontend/               # React frontend
 │   ├── src/
-│   │   ├── components/     # Компоненты
-│   │   ├── pages/          # Страницы
-│   │   └── api/            # API клиент
-│   └── public/             # Статические файлы
-└── docs/                   # Документация
+│   │   ├── components/     # Components
+│   │   ├── pages/          # Pages
+│   │   └── api/            # API client
+│   └── public/             # Static files
+└── docs/                   # Documentation
 ```
 
-## 🔧 Переменные окружения
+## 🔧 Environment Variables
 
-### Бэкенд (master ветка - MongoDB)
+### Backend (master branch - MongoDB)
 ```env
 DATABASE_URL=mongodb+srv://Admin2025:Pass321@cluster0.tavfxtx.mongodb.net/chates?retryWrites=true&w=majority&appName=Cluster
 NODE_ENV=production
 PORT=10000
 ```
 
-### Бэкенд (local ветка - SQLite)
+### Backend (local branch - SQLite)
 ```env
 DATABASE_URL=file:./dev.db
 NODE_ENV=production
 PORT=10000
 ```
 
-### Фронтенд
+### Frontend
 ```env
 VITE_API_URL=https://your-backend-url.com/api
 ```
 
 ## 📚 API Endpoints
 
-### Магазины
-- `GET /api/shops` - Все магазины
-- `GET /api/shops/:id` - Магазин по ID
+### Shops
+- `GET /api/shops` - All shops
+- `GET /api/shops/:id` - Shop by ID
 
-### Продукты
-- `GET /api/products` - Все продукты
-- `GET /api/products/:id` - Продукт по ID
+### Products
+- `GET /api/products` - All products
+- `GET /api/products/:id` - Product by ID
 
-### Заказы
-- `POST /api/orders` - Создать заказ
-- `GET /api/orders` - Все заказы
-- `GET /api/orders/:id` - Заказ по ID
+### Orders
+- `POST /api/orders` - Create order
+- `GET /api/orders` - All orders
+- `GET /api/orders/:id` - Order by ID
 
-### Пользователи
-- `GET /api/users/:email` - Пользователь по email
-- `POST /api/users` - Создать/обновить пользователя
-- `GET /api/users/:id/stats` - Статистика пользователя
+### Users
+- `GET /api/users/:email` - User by email
+- `POST /api/users` - Create/update user
+- `GET /api/users/:id/stats` - User statistics
 
-### Купоны
-- `GET /api/coupons` - Все купоны
-- `GET /api/coupons/:code/validate` - Проверить купон
+### Coupons
+- `GET /api/coupons` - All coupons
+- `GET /api/coupons/:code/validate` - Validate coupon
 
-## 🛠️ Технологии
+## 🛠️ Technologies
 
-### Бэкенд
+### Backend
 - [NestJS](https://nestjs.com/)
 - [Prisma](https://www.prisma.io/)
 - [Socket.io](https://socket.io/)
 - [Swagger](https://swagger.io/)
 
-### Фронтенд
+### Frontend
 - [React](https://react.dev/)
 - [Vite](https://vitejs.dev/)
 - [Tailwind CSS](https://tailwindcss.com/)
 - [shadcn/ui](https://ui.shadcn.com/)
 - [React Query](https://tanstack.com/query)
 
-## 📝 Лицензия
+## 📝 License
 
 MIT
