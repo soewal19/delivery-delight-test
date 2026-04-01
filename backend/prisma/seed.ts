@@ -1,4 +1,5 @@
 import { PrismaClient } from '@prisma/client';
+import * as bcrypt from 'bcrypt';
 
 const prisma = new PrismaClient();
 
@@ -12,6 +13,16 @@ async function main() {
   await prisma.category.deleteMany();
   await prisma.coupon.deleteMany();
   await prisma.user.deleteMany();
+
+  // Create a default user
+  const hashedPassword = await bcrypt.hash('password123', 10);
+  await prisma.user.create({
+    data: {
+      email: 'test@example.com',
+      password: hashedPassword,
+      name: 'Test User',
+    },
+  });
 
   // Categories
   const burgers = await prisma.category.create({ data: { name: 'Burgers' } });

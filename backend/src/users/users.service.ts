@@ -27,6 +27,24 @@ export class UsersService {
         email: data.email,
         name: data.name,
         avatar: data.avatar,
+        password: '', // Should be handled by Auth if creating via Auth
+      },
+    });
+  }
+
+  async updateAvatar(userId: string, avatarUrl: string) {
+    return this.prisma.user.update({
+      where: { id: userId },
+      data: { avatar: avatarUrl },
+    });
+  }
+
+  async updateProfile(userId: string, data: { name?: string; avatar?: string }) {
+    return this.prisma.user.update({
+      where: { id: userId },
+      data: {
+        name: data.name,
+        avatar: data.avatar,
       },
     });
   }

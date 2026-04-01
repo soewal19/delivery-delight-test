@@ -44,15 +44,11 @@ export const useUserStore = create<UserState>()(
       },
 
       updateProfile: async (data) => {
-        const currentUser = get().user;
-        if (!currentUser || !get().token) return;
+        if (!get().token) return;
 
         set({ isLoading: true });
         try {
-          const updated = await api.users.upsert({
-            email: currentUser.email,
-            ...data,
-          });
+          const updated = await api.users.updateProfile(data);
           set({ user: updated, isLoading: false, error: null });
         } catch (err: any) {
           set({ error: err.message, isLoading: false });

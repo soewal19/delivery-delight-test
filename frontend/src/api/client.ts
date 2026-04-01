@@ -87,6 +87,29 @@ export const api = {
   users: {
     getProfile: () => fetchApi<any>('/users/profile'),
     get: (email: string) => fetchApi<any>(`/users/${email}`),
+    updateProfile: (data: { name?: string; avatar?: string }) => 
+      fetchApi<any>('/users/profile', {
+        method: 'PUT',
+        body: JSON.stringify(data),
+      }),
+    uploadAvatar: (file: File) => {
+      const formData = new FormData();
+      formData.append('file', file);
+      
+      const userStorage = localStorage.getItem('delivery-delight-user');
+      const token = userStorage ? JSON.parse(userStorage).state.token : null;
+
+      return fetch(`${API_BASE_URL}/users/upload`, {
+        method: 'POST',
+        headers: {
+          ...(token ? { 'Authorization': `Bearer ${token}` } : {}),
+        },
+        body: formData,
+      }).then(res => {
+        if (!res.ok) throw new Error('Upload failed');
+        return res.json();
+      });
+    },
     upsert: (data: { email: string; name?: string; avatar?: string }) => 
       fetchApi<any>('/users', {
         method: 'POST',

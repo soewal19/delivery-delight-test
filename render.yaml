@@ -3,7 +3,7 @@ services:
     name: delivery-delight-backend
     runtime: node
     plan: free
-    buildCommand: cd backend && npm install && npx prisma generate && npx prisma migrate deploy
+    buildCommand: cd backend && npm install && DATABASE_URL=file:./dev.db npx prisma generate && DATABASE_URL=file:./dev.db npx prisma migrate deploy
     startCommand: cd backend && npm run start:prod
     envVars:
       - key: DATABASE_URL

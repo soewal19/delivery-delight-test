@@ -1,8 +1,11 @@
-import { Controller, Get, Post, Body, Param, Put, UseInterceptors, UploadedFile, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Put, UseInterceptors, UploadedFile, UseGuards, BadRequestException } from '@nestjs/common';
 import { UsersService } from './users.service';
-import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
+import { ApiTags, ApiOperation, ApiBearerAuth, ApiConsumes, ApiBody } from '@nestjs/swagger';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { CurrentUser } from '../auth/decorators/current-user.decorator';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { diskStorage } from 'multer';
+import { extname } from 'path';
 
 @ApiTags('users')
 @Controller('users')
@@ -15,6 +18,53 @@ export class UsersController {
   @ApiOperation({ summary: 'Get current user profile' })
   getProfile(@CurrentUser() user: any) {
     return this.usersService.findByEmail(user.email);
+  }
+
+  @Post('upload')
+  @UseInterceptors(FileInterceptor('file', {
+    storage: diskStorage({
+      destination: './uploads',
+      filename: (req, file, cb) => {
+        const randomName = Array(32).fill(null).map(() => (Math.round(Math.random() * 16)).toString(16)).join('');
+        return cb(null, `${randomName}${extname(file.originalname)}`);
+      },
+    }),
+    fileFilter: (req, file, cb) => {
+      if (!file.originalname.match(/\.(jpg|jpeg|png|gif)$/)) {
+        return cb(new BadRequestException('Only image files are allowed!'), false);
+      }
+      cb(null, true);
+    },
+    limits: {
+      fileSize: 1024 * 1024 * 5, // 5MB
+    }
+  }))
+  @ApiConsumes('multipart/form-data')
+  @ApiBody({
+    schema: {
+      type: 'object',
+      properties: {
+        file: {
+          type: 'string',
+          format: 'binary',
+        },
+      },
+    },
+  })
+  @ApiOperation({ summary: 'Upload user avatar' })
+  async uploadFile(@UploadedFile() file: Express.Multer.File, @CurrentUser() user: any) {
+    if (!file) {
+      throw new BadRequestException('File is required');
+    }
+    const avatarUrl = `/uploads/${file.filename}`;
+    await this.usersService.updateAvatar(user.id, avatarUrl);
+    return { url: avatarUrl };
+  }
+
+  @Put('profile')
+  @ApiOperation({ summary: 'Update user profile' })
+  async updateProfile(@CurrentUser() user: any, @Body() data: { name?: string; avatar?: string }) {
+    return this.usersService.updateProfile(user.id, data);
   }
 
   @Get(':email')
