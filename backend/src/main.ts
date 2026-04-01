@@ -5,13 +5,19 @@ import { AppModule } from './app.module';
 import { CustomLogger } from './logger/custom-logger.service';
 import { join } from 'path';
 import * as express from 'express';
+import { existsSync, mkdirSync } from 'fs';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   const logger = app.get(CustomLogger);
   app.useLogger(logger);
   
-  app.use('/uploads', express.static(join(process.cwd(), 'uploads')));
+  const uploadDir = join(process.cwd(), 'uploads');
+  if (!existsSync(uploadDir)) {
+    mkdirSync(uploadDir);
+  }
+  
+  app.use('/uploads', express.static(uploadDir));
   app.setGlobalPrefix('api');
   app.enableCors({ origin: '*' });
   app.useGlobalPipes(new ValidationPipe({ transform: true }));

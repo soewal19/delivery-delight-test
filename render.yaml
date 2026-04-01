@@ -3,11 +3,11 @@ services:
     name: delivery-delight-backend
     runtime: node
     plan: free
-    buildCommand: cd backend && npm install && DATABASE_URL=file:./dev.db npx prisma generate && DATABASE_URL=file:./dev.db npx prisma migrate deploy
+    buildCommand: cd backend && npm install && npx prisma generate
     startCommand: cd backend && npm run start:prod
     envVars:
       - key: DATABASE_URL
-        value: file:./dev.db
+        value: mongodb+srv://Admin2025:Pass321@cluster0.tavfxtx.mongodb.net/chates?retryWrites=true&w=majority&appName=Cluster
       - key: NODE_ENV
         value: production
       - key: PORT

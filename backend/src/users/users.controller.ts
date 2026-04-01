@@ -5,7 +5,7 @@ import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { CurrentUser } from '../auth/decorators/current-user.decorator';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
-import { extname } from 'path';
+import { extname, join } from 'path';
 
 @ApiTags('users')
 @Controller('users')
@@ -23,7 +23,7 @@ export class UsersController {
   @Post('upload')
   @UseInterceptors(FileInterceptor('file', {
     storage: diskStorage({
-      destination: './uploads',
+      destination: join(process.cwd(), 'uploads'),
       filename: (req, file, cb) => {
         const randomName = Array(32).fill(null).map(() => (Math.round(Math.random() * 16)).toString(16)).join('');
         return cb(null, `${randomName}${extname(file.originalname)}`);
@@ -52,7 +52,7 @@ export class UsersController {
     },
   })
   @ApiOperation({ summary: 'Upload user avatar' })
-  async uploadFile(@UploadedFile() file: Express.Multer.File, @CurrentUser() user: any) {
+  async uploadFile(@UploadedFile() file: any, @CurrentUser() user: any) {
     if (!file) {
       throw new BadRequestException('File is required');
     }
