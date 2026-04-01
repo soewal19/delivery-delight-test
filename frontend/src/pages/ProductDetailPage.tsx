@@ -98,7 +98,7 @@ const ProductDetailPage = () => {
       return;
     }
     const newComment: Comment = {
-      id: Date.now(),
+      id: String(Date.now()),
       author: author.trim(),
       text: text.trim(),
       rating,

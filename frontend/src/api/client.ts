@@ -1,4 +1,4 @@
-import type { Product, Shop, Coupon, Order, CartItem, User } from '@/types';
+import type { Product, Shop, Coupon, Order, CartItem } from '@/types';
 
 const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api';
 
@@ -30,11 +30,11 @@ async function fetchApi<T>(endpoint: string, options?: RequestInit): Promise<T> 
 
 export const api = {
   auth: {
-    login: (data: any) => fetchApi<{ access_token: string; user: User }>('/auth/login', {
+    login: (data: any) => fetchApi<{ access_token: string; user: any }>('/auth/login', {
       method: 'POST',
       body: JSON.stringify(data),
     }),
-    register: (data: any) => fetchApi<{ access_token: string; user: User }>('/auth/register', {
+    register: (data: any) => fetchApi<{ access_token: string; user: any }>('/auth/register', {
       method: 'POST',
       body: JSON.stringify(data),
     }),
