@@ -12,7 +12,7 @@ interface SocketState {
   setDbStatus: (status: boolean) => void;
 }
 
-const SOCKET_URL = import.meta.env.VITE_SOCKET_URL || 'http://localhost:3000';
+const SOCKET_URL = import.meta.env.VITE_SOCKET_URL || window.location.origin;
 
 export const useSocketStore = create<SocketState>((set, get) => ({
   socket: null,
@@ -23,8 +23,12 @@ export const useSocketStore = create<SocketState>((set, get) => ({
     if (get().socket?.connected) return;
 
     const socket = io(SOCKET_URL, {
-      transports: ['websocket'],
+      transports: ['polling', 'websocket'],
       autoConnect: true,
+      reconnection: true,
+      reconnectionAttempts: 5,
+      reconnectionDelay: 1000,
+      timeout: 20000,
     });
 
     socket.on('connect', () => {

@@ -6,18 +6,18 @@ import express from 'express';
 
 const server = express();
 
-export const bootstrap = async () => {
+let cachedHandler: any;
+
+async function bootstrap() {
   const app = await NestFactory.create(
     AppModule,
     new ExpressAdapter(server),
   );
-  app.enableCors();
+  app.enableCors({ origin: '*' });
   app.useGlobalPipes(new ValidationPipe({ transform: true }));
   await app.init();
   return server;
-};
-
-let cachedHandler: any;
+}
 
 export default async (req: any, res: any) => {
   if (!cachedHandler) {
