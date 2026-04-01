@@ -3,7 +3,7 @@ import * as winston from 'winston';
 import 'winston-daily-rotate-file';
 import * as path from 'path';
 import * as fs from 'fs-extra';
-import * as archiver from 'archiver';
+import archiver from 'archiver';
 
 @Injectable()
 export class CustomLogger implements LoggerService {

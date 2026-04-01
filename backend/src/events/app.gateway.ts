@@ -60,8 +60,8 @@ export class AppGateway implements OnGatewayConnection, OnGatewayDisconnect, OnG
 
   private async checkDbHealth(): Promise<boolean> {
     try {
-      // Use a lightweight query to verify the connection is alive and responding
-      await this.prisma.$queryRaw`SELECT 1`;
+      // For MongoDB, we can use a simple findFirst or similar to check connection
+      await this.prisma.shop.findFirst({ select: { id: true } });
       return true;
     } catch (error) {
       console.error('Database health check failed:', error);
