@@ -10,6 +10,11 @@ import path from 'path';
 const server = express();
 let prisma: PrismaClient;
 
+// Handle DATABASE_URL from MONGODB_URI if needed
+if (!process.env.DATABASE_URL && process.env.MONGODB_URI) {
+  process.env.DATABASE_URL = process.env.MONGODB_URI;
+}
+
 // Ensure Prisma client is generated
 try {
   prisma = new PrismaClient();
