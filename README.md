@@ -4,6 +4,10 @@
 
 Delivery Delight is a modern food delivery application built with NestJS and React. The application allows users to browse shops, view products, place orders, and track their delivery status in real-time. It features a responsive design, real-time updates via WebSocket, and a comprehensive API with Swagger documentation.
 
+##  Live Demo
+
+**Frontend:** [https://frontend-1h4rzn69y-tests-projects-49197035.vercel.app/](https://frontend-1h4rzn69y-tests-projects-49197035.vercel.app/)
+
 ##  Quick Start
 
 ### Local Development
