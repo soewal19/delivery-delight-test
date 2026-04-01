@@ -10,11 +10,7 @@
     },
     {
       "src": "backend/api/index.ts",
-      "use": "@vercel/node",
-      "config": {
-        "maxDuration": 60,
-        "supportsResponseStreaming": true
-      }
+      "use": "@vercel/node"
     }
   ],
   "rewrites": [
@@ -23,17 +19,8 @@
       "destination": "/backend/api/index.ts"
     },
     {
-      "source": "/socket.io/(.*)",
-      "destination": "/backend/api/index.ts"
-    },
-    {
-      "source": "/uploads/(.*)",
-      "destination": "/backend/api/index.ts"
-    },
-    {
-      "source": "/((?!api|socket.io|uploads).*)",
+      "source": "/((?!api).*)",
       "destination": "/frontend/$1"
     }
-  ],
-  "outputDirectory": "frontend/dist"
+  ]
 }
