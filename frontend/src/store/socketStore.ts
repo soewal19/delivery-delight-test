@@ -10,16 +10,32 @@ interface SocketState {
   connect: () => void;
   disconnect: () => void;
   setDbStatus: (status: boolean) => void;
+  checkHealth: () => Promise<void>;
 }
 
 const SOCKET_URL = import.meta.env.VITE_SOCKET_URL || window.location.origin;
+const API_URL = import.meta.env.VITE_API_URL || `${window.location.origin}/api`;
 
 export const useSocketStore = create<SocketState>((set, get) => ({
   socket: null,
   isSocketConnected: false,
   isDbConnected: false,
 
+  checkHealth: async () => {
+    try {
+      const response = await fetch(`${API_URL}/health`);
+      const data = await response.json();
+      set({ isDbConnected: data.status === 'ok' });
+    } catch (error) {
+      console.error('Health check failed:', error);
+      set({ isDbConnected: false });
+    }
+  },
+
   connect: () => {
+    // Also perform an initial health check
+    get().checkHealth();
+    
     if (get().socket?.connected) return;
 
     const socket = io(SOCKET_URL, {
