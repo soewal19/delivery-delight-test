@@ -164,6 +164,25 @@ VITE_API_URL=https://your-backend-url.com/api
 - [shadcn/ui](https://ui.shadcn.com/)
 - [React Query](https://tanstack.com/query)
 
+## 🧪 Testing
+
+### Unit Tests (Vitest)
+
+```bash
+cd frontend
+npm run test        # Run tests once
+npm run test:watch  # Run tests in watch mode
+```
+
+### End-to-End Tests (Playwright)
+
+```bash
+cd frontend
+npm run test:e2e   # Run e2e tests
+```
+
+---
+
 ## 📝 License
 
 MIT
