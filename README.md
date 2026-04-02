@@ -6,7 +6,7 @@ Delivery Delight is a modern food delivery application built with NestJS and Rea
 
 ##  Live Demo
 
-**Frontend:** [https://frontend-1h4rzn69y-tests-projects-49197035.vercel.app/](https://frontend-1h4rzn69y-tests-projects-49197035.vercel.app/)
+**Frontend:** [https://frontend-o6gt321x1-tests-projects-49197035.vercel.app/](https://frontend-o6gt321x1-tests-projects-49197035.vercel.app/)
 
 ##  Quick Start
 
