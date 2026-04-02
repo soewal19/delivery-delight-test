@@ -8,6 +8,7 @@
     }
   ],
   "rewrites": [
+    { "source": "/api/(.*)", "destination": "https://backend-one-mu-44.vercel.app/api/$1" },
     { "source": "/(.*)", "destination": "/index.html" }
   ]
 }
