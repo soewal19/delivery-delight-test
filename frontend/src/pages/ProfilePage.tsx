@@ -105,7 +105,9 @@ const ProfilePage = () => {
   }
 
   const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api';
-  const fullAvatarUrl = avatarUrl.startsWith('http') ? avatarUrl : `${API_URL.replace('/api', '')}${avatarUrl}`;
+  const fullAvatarUrl = avatarUrl.startsWith('http') || avatarUrl.startsWith('data:') 
+    ? avatarUrl 
+    : `${API_URL.replace('/api', '')}${avatarUrl}`;
 
   return (
     <div className="container py-8 max-w-7xl mx-auto space-y-8">

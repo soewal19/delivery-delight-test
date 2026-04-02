@@ -4,8 +4,7 @@ import { ApiTags, ApiOperation, ApiBearerAuth, ApiConsumes, ApiBody } from '@nes
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { CurrentUser } from '../auth/decorators/current-user.decorator';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { diskStorage } from 'multer';
-import { extname, join } from 'path';
+import { memoryStorage } from 'multer';
 
 @ApiTags('users')
 @Controller('users')
@@ -22,13 +21,7 @@ export class UsersController {
 
   @Post('upload')
   @UseInterceptors(FileInterceptor('file', {
-    storage: diskStorage({
-      destination: join(process.cwd(), 'uploads'),
-      filename: (req, file, cb) => {
-        const randomName = Array(32).fill(null).map(() => (Math.round(Math.random() * 16)).toString(16)).join('');
-        return cb(null, `${randomName}${extname(file.originalname)}`);
-      },
-    }),
+    storage: memoryStorage(),
     fileFilter: (req, file, cb) => {
       if (!file.originalname.match(/\.(jpg|jpeg|png|gif)$/)) {
         return cb(new BadRequestException('Only image files are allowed!'), false);
@@ -56,7 +49,11 @@ export class UsersController {
     if (!file) {
       throw new BadRequestException('File is required');
     }
-    const avatarUrl = `/uploads/${file.filename}`;
+    
+    // Convert buffer to base64
+    const base64 = file.buffer.toString('base64');
+    const avatarUrl = `data:${file.mimetype};base64,${base64}`;
+    
     await this.usersService.updateAvatar(user.id, avatarUrl);
     return { url: avatarUrl };
   }

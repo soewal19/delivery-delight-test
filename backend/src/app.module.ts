@@ -1,6 +1,4 @@
 import { Module } from '@nestjs/common';
-import { ServeStaticModule } from '@nestjs/serve-static';
-import { join } from 'path';
 import { PrismaModule } from './prisma/prisma.module';
 import { ShopsModule } from './shops/shops.module';
 import { ProductsModule } from './products/products.module';
@@ -14,10 +12,6 @@ import { HealthController } from './health.controller';
 
 @Module({
   imports: [
-    ServeStaticModule.forRoot({
-      rootPath: join(process.cwd(), 'uploads'),
-      serveRoot: '/uploads',
-    }),
     PrismaModule, 
     ShopsModule, 
     ProductsModule, 

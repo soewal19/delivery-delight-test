@@ -3,19 +3,11 @@ import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { ValidationPipe } from '@nestjs/common';
 import { AppModule } from './app.module';
 import { CustomLogger } from './logger/custom-logger.service';
-import { join } from 'path';
-import { existsSync, mkdirSync } from 'fs';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   const logger = app.get(CustomLogger);
   app.useLogger(logger);
-  
-  const uploadDir = join(process.cwd(), 'uploads');
-  console.log('Serving static files from:', uploadDir);
-  if (!existsSync(uploadDir)) {
-    mkdirSync(uploadDir);
-  }
   
   app.setGlobalPrefix('api');
   app.enableCors({ origin: '*' });
