@@ -54,25 +54,27 @@ export class OrdersService {
   }
 
   findByContact(email?: string, phone?: string, orderId?: string) {
-    const where: any = {};
-    
     // Require at least one filter
     if (!email && !phone && !orderId) return [];
 
+    const conditions: any[] = [];
+
     if (orderId) {
-      where.id = orderId;
+      conditions.push({ id: orderId });
     }
     
     if (email) {
-      where.email = { equals: email, mode: 'insensitive' };
+      conditions.push({ email: { equals: email, mode: 'insensitive' } });
     }
     
     if (phone) {
-      where.phone = { equals: phone };
+      conditions.push({ phone: { equals: phone } });
     }
 
     return this.prisma.order.findMany({
-      where,
+      where: {
+        OR: conditions
+      },
       include: { items: { include: { product: true } } },
       orderBy: { createdAt: 'desc' },
     });
