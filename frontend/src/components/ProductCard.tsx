@@ -17,6 +17,7 @@ import { toast } from 'sonner';
 
 import LazyImage from '@/components/LazyImage';
 
+
 interface ProductCardProps {
   product: Product;
 }
@@ -80,7 +81,7 @@ const ProductCard = ({ product }: ProductCardProps) => {
                     "h-8 w-8 rounded-full shadow-md transition-all hover:scale-110",
                     isFav && "text-red-500 fill-red-500"
                   )}
-                  onClick={handleToggleFav}
+                  onClick={(e) => handleToggleFav(e)}
                 >
                   <Heart className={cn("h-4 w-4", isFav && "fill-current")} />
                 </Button>
@@ -90,9 +91,9 @@ const ProductCard = ({ product }: ProductCardProps) => {
               <div className="flex items-start justify-between gap-2">
                 <h3 className="font-semibold text-foreground leading-tight line-clamp-1">{product.name}</h3>
                 <div className="text-right shrink-0">
-                  <span className="text-lg font-bold text-primary">{"$"}{product.price.toFixed(2)}</span>
+                  <span className="text-lg font-bold text-primary">${product.price.toFixed(2)}</span>
                   {product.originalPrice && (
-                    <span className="block text-xs text-muted-foreground line-through">{"$"}{product.originalPrice.toFixed(2)}</span>
+                    <span className="block text-xs text-muted-foreground line-through">${product.originalPrice.toFixed(2)}</span>
                   )}
                 </div>
               </div>
