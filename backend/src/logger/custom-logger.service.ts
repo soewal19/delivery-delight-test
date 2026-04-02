@@ -11,44 +11,53 @@ export class CustomLogger implements LoggerService {
   private readonly logsDir = path.join(process.cwd(), 'logs');
 
   constructor() {
-    this.ensureLogsDir();
+    if (!process.env.VERCEL) {
+      this.ensureLogsDir();
+    }
     this.initializeWinston();
   }
 
   private ensureLogsDir() {
+    if (process.env.VERCEL) return;
     if (!fs.existsSync(this.logsDir)) {
       fs.mkdirpSync(this.logsDir);
     }
   }
 
   private initializeWinston() {
-    const fileTransport = new winston.transports.DailyRotateFile({
-      filename: path.join(this.logsDir, 'application-%DATE%.log'),
-      datePattern: 'YYYY-MM-DD-HH-mm', // Smaller interval for testing rotation if needed, otherwise use 'YYYY-MM-DD'
-      zippedArchive: false, // We'll handle zipping manually to keep exactly 3 files
-      maxSize: '20m',
-      maxFiles: '14d', // Keep history, but we'll zip old ones
-    });
+    const transports: winston.transport[] = [
+      new winston.transports.Console({
+        format: winston.format.combine(
+          winston.format.colorize(),
+          winston.format.simple(),
+        ),
+      }),
+    ];
 
-    fileTransport.on('rotate', () => {
-      this.handleLogRotation();
-    });
+    if (!process.env.VERCEL) {
+      const fileTransport = new winston.transports.DailyRotateFile({
+        filename: path.join(this.logsDir, 'application-%DATE%.log'),
+        datePattern: 'YYYY-MM-DD-HH-mm',
+        zippedArchive: false,
+        maxSize: '20m',
+        maxFiles: '14d',
+        format: winston.format.combine(
+          winston.format.timestamp(),
+          winston.format.json(),
+        ),
+      });
+      transports.push(fileTransport);
+    }
 
     this.logger = winston.createLogger({
       level: 'info',
       format: winston.format.combine(
         winston.format.timestamp(),
-        winston.format.json()
-      ),
-      transports: [
-        new winston.transports.Console({
-          format: winston.format.combine(
-            winston.format.colorize(),
-            winston.format.simple()
-          ),
+        winston.format.printf(({ timestamp, level, message, ...meta }) => {
+          return `${timestamp} [${level.toUpperCase()}]: ${message} ${Object.keys(meta).length ? JSON.stringify(meta) : ''}`;
         }),
-        fileTransport,
-      ],
+      ),
+      transports,
     });
   }
 
