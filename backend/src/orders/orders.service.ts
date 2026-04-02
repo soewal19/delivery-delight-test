@@ -55,14 +55,21 @@ export class OrdersService {
 
   findByContact(email?: string, phone?: string, orderId?: string) {
     const where: any = {};
+    
+    // Require at least one filter
+    if (!email && !phone && !orderId) return [];
+
     if (orderId) {
       where.id = orderId;
-    } else {
-      if (email) where.email = email;
-      if (phone) where.phone = phone;
     }
     
-    if (Object.keys(where).length === 0) return [];
+    if (email) {
+      where.email = { equals: email, mode: 'insensitive' };
+    }
+    
+    if (phone) {
+      where.phone = { equals: phone };
+    }
 
     return this.prisma.order.findMany({
       where,
