@@ -9,13 +9,15 @@ import { Tooltip, TooltipTrigger, TooltipContent } from '@/components/ui/tooltip
 import { Trash2, Minus, Plus, Tag, Loader2 } from 'lucide-react';
 import { toast } from 'sonner';
 import { api } from '@/api/client';
+import { useUserStore } from '@/store/userStore';
 import { useNavigate } from 'react-router-dom';
 
 const CartPage = () => {
   const { items, updateQuantity, removeItem, clearCart, getTotal, applyCoupon, removeCoupon, couponCode, couponDiscount, submitOrder, isLoading } = useCartStore();
   const navigate = useNavigate();
+  const user = useUserStore((s) => s.user);
 
-  const [email, setEmail] = useState('');
+  const [email, setEmail] = useState(user?.email || '');
   const [phone, setPhone] = useState('');
   const [address, setAddress] = useState('');
   const [couponInput, setCouponInput] = useState('');

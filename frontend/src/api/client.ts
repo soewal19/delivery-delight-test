@@ -72,11 +72,13 @@ export const api = {
         body: JSON.stringify(data),
       }),
     find: (email?: string, phone?: string, orderId?: string) => {
-      const params = new URLSearchParams();
-      if (email) params.append('email', email);
-      if (phone) params.append('phone', phone);
-      if (orderId) params.append('orderId', orderId);
-      return fetchApi<Order[]>(`/orders?${params.toString()}`);
+      const searchParams = new URLSearchParams();
+      if (email) searchParams.append('email', email);
+      if (phone) searchParams.append('phone', phone);
+      if (orderId) searchParams.append('orderId', orderId);
+      
+      const endpoint = searchParams.toString() ? `/orders?${searchParams.toString()}` : '/orders';
+      return fetchApi<Order[]>(endpoint);
     },
     get: (id: string) => fetchApi<Order>(`/orders/${id}`),
   },
@@ -116,5 +118,12 @@ export const api = {
         body: JSON.stringify(data),
       }),
     getStats: (id: string) => fetchApi<any>(`/users/${id}/stats`),
+  },
+  favorites: {
+    list: () => fetchApi<Product[]>('/favorites'),
+    toggle: (productId: string) => fetchApi<{ isFavorite: boolean }>(`/favorites/${productId}/toggle`, {
+      method: 'POST',
+    }),
+    getStatus: (productId: string) => fetchApi<boolean>(`/favorites/${productId}/status`),
   },
 };

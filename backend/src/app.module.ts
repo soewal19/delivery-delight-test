@@ -8,6 +8,7 @@ import { EventsModule } from './events/events.module';
 import { UsersModule } from './users/users.module';
 import { LoggerModule } from './logger/logger.module';
 import { AuthModule } from './auth/auth.module';
+import { FavoritesModule } from './favorites/favorites.module';
 import { HealthController } from './health.controller';
 
 @Module({
@@ -20,7 +21,8 @@ import { HealthController } from './health.controller';
     EventsModule, 
     UsersModule, 
     LoggerModule, 
-    AuthModule
+    AuthModule,
+    FavoritesModule
   ],
   controllers: [HealthController],
 })

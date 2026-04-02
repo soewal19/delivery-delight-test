@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useUserStore } from '@/store/userStore';
 import { useCartStore } from '@/store/cartStore';
@@ -13,25 +14,34 @@ import {
   LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip as ChartTooltip, ResponsiveContainer, Area, AreaChart 
 } from 'recharts';
 import { 
-  User as UserIcon, Settings, LogOut, Package, CreditCard, Camera, TrendingUp, Calendar, ShoppingBag, RotateCcw, Save, X, Loader2
+  User as UserIcon, Settings, LogOut, Package, CreditCard, Camera, TrendingUp, Calendar, ShoppingBag, RotateCcw, Save, X, Loader2, ChevronDown, ChevronUp, Heart,
+  StarIcon
 } from 'lucide-react';
 import { api } from '@/api/client';
+import { useFavoriteStore } from '@/store/favoriteStore';
 import { toast } from 'sonner';
 
 const ProfilePage = () => {
   const { user, updateProfile, logout, fetchProfile } = useUserStore();
   const { orders, fetchOrders, isLoading: ordersLoading } = useCartStore();
+  const { favorites, fetchFavorites } = useFavoriteStore();
   const [stats, setStats] = useState<any>(null);
   const [activeTab, setActiveTab] = useState('overview');
   const [name, setName] = useState(user?.name || '');
   const [avatarUrl, setAvatarUrl] = useState(user?.avatar || '');
   const [isUploading, setIsUploading] = useState(false);
   const [isUpdating, setIsUpdating] = useState(false);
+  const [expandedOrder, setExpandedOrder] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const toggleOrder = (orderId: string) => {
+    setExpandedOrder(expandedOrder === orderId ? null : orderId);
+  };
 
   useEffect(() => {
     if (user?.email) {
       fetchOrders(user.email);
+      fetchFavorites();
       loadStats();
     }
     if (user) {
@@ -158,7 +168,7 @@ const ProfilePage = () => {
       </div>
 
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full space-y-6">
-        <TabsList className="grid grid-cols-3 w-full max-w-md mx-auto md:mx-0 p-1 bg-muted/50 rounded-xl">
+        <TabsList className="grid grid-cols-4 w-full max-w-lg mx-auto md:mx-0 p-1 bg-muted/50 rounded-xl">
           <TabsTrigger value="overview" className="rounded-lg data-[state=active]:shadow-md">
             <TrendingUp className="h-4 w-4 mr-2" />
             Overview
@@ -166,6 +176,10 @@ const ProfilePage = () => {
           <TabsTrigger value="orders" className="rounded-lg data-[state=active]:shadow-md">
             <Package className="h-4 w-4 mr-2" />
             Orders
+          </TabsTrigger>
+          <TabsTrigger value="favorites" className="rounded-lg data-[state=active]:shadow-md">
+            <Heart className="h-4 w-4 mr-2" />
+            Favorites
           </TabsTrigger>
           <TabsTrigger value="settings" className="rounded-lg data-[state=active]:shadow-md">
             <Settings className="h-4 w-4 mr-2" />
@@ -291,40 +305,156 @@ const ProfilePage = () => {
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: idx * 0.05 }}
                 >
-                  <Card className="hover:border-primary/40 transition-all hover:shadow-md group">
-                    <CardContent className="p-6 flex flex-col md:flex-row md:items-center justify-between gap-6">
-                      <div className="flex items-center gap-6">
-                        <div className="h-14 w-14 bg-primary/10 rounded-2xl flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-primary-foreground transition-colors">
-                          <ShoppingBag className="h-7 w-7" />
-                        </div>
-                        <div>
-                          <div className="flex items-center gap-2 mb-1">
-                            <p className="font-bold text-lg">Order #{order.id.slice(-6).toUpperCase()}</p>
-                            <Badge className={`${order.status === 'delivered' ? 'bg-green-500' : 'bg-blue-500'}`}>
-                              {order.status}
-                            </Badge>
+                  <Card className="hover:border-primary/40 transition-all hover:shadow-md group overflow-hidden">
+                    <CardContent className="p-0">
+                      <div 
+                        className="p-6 flex flex-col md:flex-row md:items-center justify-between gap-6 cursor-pointer hover:bg-muted/30 transition-colors"
+                        onClick={() => toggleOrder(order.id)}
+                      >
+                        <div className="flex items-center gap-6">
+                          <div className="h-14 w-14 bg-primary/10 rounded-2xl flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-primary-foreground transition-colors">
+                            <ShoppingBag className="h-7 w-7" />
                           </div>
-                          <p className="text-sm text-muted-foreground flex items-center gap-1.5">
-                            <Calendar className="h-4 w-4" />
-                            {new Date(order.createdAt).toLocaleDateString(undefined, { 
-                              year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' 
-                            })}
-                          </p>
+                          <div>
+                            <div className="flex items-center gap-2 mb-1">
+                              <p className="font-bold text-lg">Order #{order.id.slice(-6).toUpperCase()}</p>
+                              <Badge className={`${(order as any).status === 'delivered' ? 'bg-green-500' : 'bg-blue-500'}`}>
+                                {(order as any).status}
+                              </Badge>
+                            </div>
+                            <p className="text-sm text-muted-foreground flex items-center gap-1.5">
+                              <Calendar className="h-4 w-4" />
+                              {new Date(order.createdAt).toLocaleDateString(undefined, { 
+                                year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' 
+                              })}
+                            </p>
+                          </div>
+                        </div>
+                        <div className="flex items-center justify-between md:text-right gap-6">
+                          <div className="md:text-right">
+                            <p className="text-2xl font-black text-primary">${order.total.toFixed(2)}</p>
+                            <p className="text-xs text-muted-foreground">Total Amount</p>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <Button 
+                              variant="outline" 
+                              size="sm" 
+                              className="hidden sm:flex"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                toggleOrder(order.id);
+                              }}
+                            >
+                              {expandedOrder === order.id ? 'Hide Details' : 'View Details'}
+                            </Button>
+                            {expandedOrder === order.id ? <ChevronUp className="h-5 w-5 text-muted-foreground" /> : <ChevronDown className="h-5 w-5 text-muted-foreground" />}
+                          </div>
                         </div>
                       </div>
-                      <div className="flex items-center justify-between md:text-right gap-4">
-                        <div className="md:text-right">
-                          <p className="text-2xl font-black text-primary">${order.total.toFixed(2)}</p>
-                          <p className="text-xs text-muted-foreground">Total Amount</p>
-                        </div>
-                        <Button variant="outline" size="sm" className="hidden sm:flex">Details</Button>
-                      </div>
+
+                      <AnimatePresence>
+                        {expandedOrder === order.id && (
+                          <motion.div
+                            initial={{ height: 0, opacity: 0 }}
+                            animate={{ height: 'auto', opacity: 1 }}
+                            exit={{ height: 0, opacity: 0 }}
+                            transition={{ duration: 0.3, ease: 'easeInOut' }}
+                          >
+                            <div className="border-t bg-muted/20 p-6 space-y-4">
+                              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div className="space-y-3">
+                                  <h4 className="font-bold text-sm uppercase tracking-wider text-muted-foreground">Delivery Information</h4>
+                                  <div className="space-y-1 text-sm">
+                                    <p><span className="text-muted-foreground">Address:</span> {order.address}</p>
+                                    <p><span className="text-muted-foreground">Phone:</span> {order.phone}</p>
+                                    <p><span className="text-muted-foreground">Email:</span> {order.email}</p>
+                                  </div>
+                                </div>
+                                <div className="space-y-3">
+                                  <h4 className="font-bold text-sm uppercase tracking-wider text-muted-foreground">Order Items</h4>
+                                  <div className="space-y-3">
+                                    {order.items.map((item) => (
+                                      <Link 
+                                        key={item.product.id} 
+                                        to={`/product/${item.product.id}`}
+                                        className="flex items-center gap-3 bg-background p-2 rounded-lg border shadow-sm hover:border-primary/50 transition-colors"
+                                      >
+                                        <img src={item.product.image} alt={item.product.name} className="h-10 w-10 rounded object-cover" />
+                                        <div className="flex-1 min-w-0">
+                                          <p className="text-sm font-medium truncate">{item.product.name}</p>
+                                          <p className="text-xs text-muted-foreground">{item.quantity} x ${item.product.price.toFixed(2)}</p>
+                                        </div>
+                                        <p className="text-sm font-bold">${(item.quantity * item.product.price).toFixed(2)}</p>
+                                      </Link>
+                                    ))}
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </motion.div>
+                        )}
+                      </AnimatePresence>
                     </CardContent>
                   </Card>
                 </motion.div>
               ))
             )}
           </div>
+        </TabsContent>
+
+        <TabsContent value="favorites" className="space-y-6">
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="text-2xl font-bold flex items-center gap-2">
+              <Heart className="h-6 w-6 text-red-500 fill-red-500" />
+              Your Favorite Products
+            </h2>
+            <Badge variant="outline" className="px-3 py-1">{favorites.length} products</Badge>
+          </div>
+          
+          {favorites.length === 0 ? (
+            <Card className="bg-muted/30 border-dashed py-20">
+              <CardContent className="flex flex-col items-center justify-center text-muted-foreground">
+                <Heart className="h-12 w-12 mb-4 opacity-20" />
+                <p className="text-lg">Your favorites list is empty.</p>
+                <Button variant="link" className="mt-2" onClick={() => window.location.href = '/'}>Browse Products</Button>
+              </CardContent>
+            </Card>
+          ) : (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+              {favorites.map((product) => (
+                <div key={product.id} className="relative group">
+                  <div className="aspect-square rounded-xl overflow-hidden border bg-muted mb-3 relative shadow-sm group-hover:shadow-md transition-all">
+                    <img src={product.image} alt={product.name} className="h-full w-full object-cover group-hover:scale-105 transition-transform duration-300" />
+                    <Button 
+                      variant="destructive" 
+                      size="icon" 
+                      className="absolute top-2 right-2 h-8 w-8 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
+                      onClick={() => useFavoriteStore.getState().toggleFavorite(product)}
+                    >
+                      <X className="h-4 w-4" />
+                    </Button>
+                    <div className="absolute bottom-2 left-2">
+                      <Badge className="bg-background/80 backdrop-blur-sm text-foreground hover:bg-background/90">{product.category}</Badge>
+                    </div>
+                  </div>
+                  <Link to={`/product/${product.id}`} className="block space-y-1">
+                    <h3 className="font-bold text-foreground truncate">{product.name}</h3>
+                    <div className="flex items-center justify-between">
+                      <span className="text-primary font-black text-lg">${product.price.toFixed(2)}</span>
+                      <div className="flex items-center gap-1">
+                        {[...Array(5)].map((_, i) => (
+                          <StarIcon
+                            key={i}
+                            className={`h-3 w-3 ${i < Math.floor(product.rating) ? 'fill-yellow-400 text-yellow-400' : 'text-gray-300'}`}
+                          />
+                        ))}
+                      </div>
+                    </div>
+                  </Link>
+                </div>
+              ))}
+            </div>
+          )}
         </TabsContent>
 
         <TabsContent value="settings">

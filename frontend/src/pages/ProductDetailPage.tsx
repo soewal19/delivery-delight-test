@@ -11,12 +11,15 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Badge } from '@/components/ui/badge';
 import { Tooltip, TooltipTrigger, TooltipContent } from '@/components/ui/tooltip';
-import { ArrowLeft, Plus, Send, MessageCircle, Percent, Loader2, Store } from 'lucide-react';
+import { ArrowLeft, Plus, Send, MessageCircle, Percent, Loader2, Store, Heart } from 'lucide-react';
 import { useShopStore } from '@/store/shopStore';
 import { useCartStore } from '@/store/cartStore';
 import { useViewedStore } from '@/store/viewedStore';
+import { useFavoriteStore } from '@/store/favoriteStore';
+import { useUserStore } from '@/store/userStore';
 import { api } from '@/api/client';
 import { toast } from 'sonner';
+import { cn } from '@/lib/utils';
 import type { Comment, Product } from '@/types';
 
 const REVIEWS_PER_PAGE = 6;
@@ -26,6 +29,8 @@ const ProductDetailPage = () => {
   const products = useShopStore((s) => s.products);
   const addItem = useCartStore((s) => s.addItem);
   const addViewed = useViewedStore((s) => s.addViewed);
+  const { toggleFavorite, isFavorite } = useFavoriteStore();
+  const user = useUserStore((s) => s.user);
   
   const [product, setProduct] = useState<Product | null>(
     products.find((p) => p.id === id) || null
@@ -37,6 +42,8 @@ const ProductDetailPage = () => {
   const [rating, setRating] = useState(5);
   const [localComments, setLocalComments] = useState<Comment[]>([]);
   const [showCartAnim, setShowCartAnim] = useState(false);
+
+  const isFav = product ? isFavorite(product.id) : false;
 
   useEffect(() => {
     const loadProduct = async () => {
@@ -79,6 +86,16 @@ const ProductDetailPage = () => {
       </div>
     );
   }
+
+  const handleToggleFav = (e: React.MouseEvent) => {
+    e.preventDefault();
+    if (!user) {
+      toast.error('Please login to add favorites');
+      return;
+    }
+    toggleFavorite(product);
+    toast.success(isFav ? 'Removed from favorites' : 'Added to favorites');
+  };
 
   const discountPercent = product.originalPrice
     ? Math.round((1 - product.price / product.originalPrice) * 100)
@@ -171,14 +188,30 @@ const ProductDetailPage = () => {
             {discountPercent > 0 && (
               <p className="text-sm text-destructive font-medium">You save ${(product.originalPrice! - product.price).toFixed(2)}!</p>
             )}
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Button onClick={handleAddToCart} size="lg" className="w-fit">
-                  <Plus className="h-5 w-5 mr-2" /> Add to Cart
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent>Add this item to your shopping cart</TooltipContent>
-            </Tooltip>
+            <div className="flex items-center gap-3">
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button onClick={handleAddToCart} size="lg" className="w-fit">
+                    <Plus className="h-5 w-5 mr-2" /> Add to Cart
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>Add this item to your shopping cart</TooltipContent>
+              </Tooltip>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button 
+                    onClick={handleToggleFav} 
+                    variant="secondary" 
+                    size="lg" 
+                    className={cn("w-fit transition-all hover:scale-105", isFav && "text-red-500 fill-red-500")}
+                  >
+                    <Heart className={cn("h-5 w-5 mr-2", isFav && "fill-current")} />
+                    {isFav ? 'In Favorites' : 'Add to Favorites'}
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>{isFav ? 'Remove from favorites' : 'Add to favorites'}</TooltipContent>
+              </Tooltip>
+            </div>
           </motion.div>
         </div>
 

@@ -5,11 +5,14 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Tooltip, TooltipTrigger, TooltipContent } from '@/components/ui/tooltip';
-import { Plus, Percent } from 'lucide-react';
+import { Plus, Percent, Heart } from 'lucide-react';
+import { cn } from '@/lib/utils';
 import StarRating from '@/components/StarRating';
 import CartAnimation from '@/components/CartAnimation';
 import type { Product } from '@/types';
 import { useCartStore } from '@/store/cartStore';
+import { useFavoriteStore } from '@/store/favoriteStore';
+import { useUserStore } from '@/store/userStore';
 import { toast } from 'sonner';
 
 import LazyImage from '@/components/LazyImage';
@@ -20,7 +23,11 @@ interface ProductCardProps {
 
 const ProductCard = ({ product }: ProductCardProps) => {
   const addItem = useCartStore((s) => s.addItem);
+  const { toggleFavorite, isFavorite } = useFavoriteStore();
+  const user = useUserStore((s) => s.user);
   const [showCartAnim, setShowCartAnim] = useState(false);
+  const isFav = isFavorite(product.id);
+
   const discountPercent = product.originalPrice
     ? Math.round((1 - product.price / product.originalPrice) * 100)
     : 0;
@@ -31,6 +38,17 @@ const ProductCard = ({ product }: ProductCardProps) => {
     addItem(product);
     setShowCartAnim(true);
     toast.success(`${product.name} added to cart`);
+  };
+
+  const handleToggleFav = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (!user) {
+      toast.error('Please login to add favorites');
+      return;
+    }
+    toggleFavorite(product);
+    toast.success(isFav ? 'Removed from favorites' : 'Added to favorites');
   };
 
   return (
@@ -48,20 +66,33 @@ const ProductCard = ({ product }: ProductCardProps) => {
               <span className="absolute top-2 left-2 rounded-full bg-secondary px-2.5 py-0.5 text-xs font-medium text-secondary-foreground">
                 {product.category}
               </span>
-              {discountPercent > 0 && (
-                <Badge className="absolute top-2 right-2 bg-destructive text-destructive-foreground gap-1">
-                  <Percent className="h-3 w-3" />
-                  -{discountPercent}%
-                </Badge>
-              )}
+              <div className="absolute top-2 right-2 flex flex-col gap-2">
+                {discountPercent > 0 && (
+                  <Badge className="bg-destructive text-destructive-foreground gap-1">
+                    <Percent className="h-3 w-3" />
+                    -{discountPercent}%
+                  </Badge>
+                )}
+                <Button
+                  variant="secondary"
+                  size="icon"
+                  className={cn(
+                    "h-8 w-8 rounded-full shadow-md transition-all hover:scale-110",
+                    isFav && "text-red-500 fill-red-500"
+                  )}
+                  onClick={handleToggleFav}
+                >
+                  <Heart className={cn("h-4 w-4", isFav && "fill-current")} />
+                </Button>
+              </div>
             </div>
             <CardContent className="p-4 space-y-2">
               <div className="flex items-start justify-between gap-2">
                 <h3 className="font-semibold text-foreground leading-tight line-clamp-1">{product.name}</h3>
                 <div className="text-right shrink-0">
-                  <span className="text-lg font-bold text-primary">${product.price.toFixed(2)}</span>
+                  <span className="text-lg font-bold text-primary">{"$"}{product.price.toFixed(2)}</span>
                   {product.originalPrice && (
-                    <span className="block text-xs text-muted-foreground line-through">${product.originalPrice.toFixed(2)}</span>
+                    <span className="block text-xs text-muted-foreground line-through">{"$"}{product.originalPrice.toFixed(2)}</span>
                   )}
                 </div>
               </div>
