@@ -17,21 +17,16 @@ export class OrdersController {
   }
 
   @Get()
-  @UseGuards(JwtAuthGuard)
-  @ApiBearerAuth()
   @ApiOperation({ summary: 'Find orders by email, phone or order ID' })
   @ApiQuery({ name: 'email', required: false })
   @ApiQuery({ name: 'phone', required: false })
   @ApiQuery({ name: 'orderId', required: false })
   find(
-    @CurrentUser() user: any,
     @Query('email') email?: string,
     @Query('phone') phone?: string,
     @Query('orderId') orderId?: string,
   ) {
-    // If user is logged in, filter by their email unless specified otherwise
-    const searchEmail = email || user.email;
-    return this.ordersService.findByContact(searchEmail, phone, orderId);
+    return this.ordersService.findByContact(email, phone, orderId);
   }
 
   @Get(':id')
